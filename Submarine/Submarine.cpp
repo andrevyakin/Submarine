@@ -64,6 +64,11 @@ void Submarine::forward(Submarine * submarine, bool dir)
 	system("cls");
 	cout << "Время в пути" << endl;
 	cout << "Остаток горючего" << endl;
+	if (dir)
+		cout << "\nДвигаемся вперед. Расход топлива 10 л/с" << endl;
+	else
+		cout << "\nДвигаемся назад. Расход топлива 20 л/с" << endl;
+	cout << "\nДля остановки нажмите пробел" << endl;
 	
 	while (stop != VKey::Spase)
 	{
@@ -73,7 +78,7 @@ void Submarine::forward(Submarine * submarine, bool dir)
 		dir ? submarine->fuel -= 10 : submarine->fuel -= 20;
 		cout << submarine->fuel;
 		Sleep(1000);
-		if (_kbhit())
+		if (_kbhit() || !submarine->fuel)
 			stop = _getch();
 	}
 }
@@ -143,64 +148,91 @@ void main()
 			case 0:
 			{
 					  system("cls");
-					  cout << "Информация о подводной лодке..." << endl;
-					  system("pause");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nИнформация о подводной лодке..." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
 					  break;
 			}
 				//Название
 			case 1:
 			{
 					  system("cls");
-					  cout << submarine.name << endl;
-					  system("pause");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\n" << submarine.name << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
 					  break;
 			}
 				//Количество торпед.
 			case 2:
 			{
 					  system("cls");
-					  cout << "На борту " << submarine.torpedoes << " торпед." << endl;
-					  system("pause");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nНа борту " << submarine.torpedoes << " торпед." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();;
 					  break;
 			}
 				//Запас топлива
 			case 3:
 			{
 					  system("cls");
-					  cout << "Запас топлива " << submarine.fuel << " литров." << endl;
-					  system("pause");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nЗапас топлива " << submarine.fuel << " литров." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
 					  break;
 			}
 				//Режим хода
 			case 4:
 			{
 					  system("cls");
-					  cout << "Выбир режима хода." << endl;
-					  system("pause");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nВыбор режима хода." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
 					  break;
 			}
 				//Начать движение вперед
 			case 5:
 			{
-					  system("cls");
-					  cout << "В настоящее время топлива " << submarine.fuel << " литров" << endl;
-					  cout << "Расход топлива 10 литров в секунду" << endl;
-					  cout << "Дня начала движения нажмите любую клавиу" << endl;
-					  _getch();
 					  submarine.forward(&submarine, true);
-					  system("pause");
 					  break;
 			}
-				//Начать движение вперед
-			case 7:
+			//Остановиться
+			case 6:
 			{
 					  system("cls");
-					  cout << "В настоящее время топлива " << submarine.fuel << " литров" << endl;
-					  cout << "Расход топлива 20 литров в секунду" << endl;
-					  cout << "Дня начала движения нажмите любую клавиу" << endl;
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nПодводная лодка остановилась." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
 					  _getch();
+					  break;
+			}
+
+				//Начать движение назад
+			case 7:
+			{
 					  submarine.forward(&submarine, false);
-					  system("pause");
+					  break;
+			}
+				//Дозаправка
+			case 8:
+			{
+					  system("cls");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  submarine.fuel = 1000;
+					  cout << "\nПодводная заправлена полностью (1000 л.)." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
 					  break;
 			}
 		}
