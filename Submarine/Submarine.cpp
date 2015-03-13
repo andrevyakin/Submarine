@@ -104,6 +104,7 @@ void Submarine::target(Submarine * submarine)
 		SetConsoleColorTextBackground(clGray, clBlack);
 		for (int i = 1; i < 15; i++)
 			cout << setw(4) << setfill(' ') << target[i];
+		cout << "\n\nEnter - выстрел. Количество торпед   " << submarine->torpedoes;
 
 		//Перемещение по целям стрелочками клавиатуры
 		x = move = 0;
@@ -125,7 +126,15 @@ void Submarine::target(Submarine * submarine)
 			cout << setw(4) << setfill(' ') << target[x / 4];
 			SetConsoleColorTextBackground(clGray, clBlack);
 		}
-	} while (move != VKey::ESC && x != 13);
+		if (move == VKey::ENTER && submarine->torpedoes > 0)
+		{
+			SetConsoleCursorPosition(0, 8);
+			cout << "\t\tЦель поражена!!!" << endl;
+			submarine->torpedoes--;
+		}
+		else if (!submarine->torpedoes)
+			cout << "Торпеды закончились..." << endl;
+	} while (move != VKey::ESC && move != VKey::ENTER);
 
 }
 
@@ -276,7 +285,7 @@ void main()
 					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
 					  SetConsoleColorTextBackground(clWhite, clGreen);
 					  submarine.fuel = 1000;
-					  cout << "\nПодводная заправлена полностью (1000 л.)." << endl;
+					  cout << "\nПодводная лодка заправлена полностью (1000 л.)." << endl;
 					  SetConsoleColorTextBackground(clGray, clBlack);
 					  _getch();
 					  break;
@@ -299,6 +308,26 @@ void main()
 					   submarine.target(&submarine);
 					  _getch();
 					  break;
+			}
+				//Перезарядка аппарата
+			case 11:
+			{
+					   system("cls");
+					   copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					   SetConsoleColorTextBackground(clWhite, clGreen);
+					   submarine.fuel = 1000;
+					   cout << "\nПодводная лодка укомплекторана торпедами полностью (10 шт.)." << endl;
+					   SetConsoleColorTextBackground(clGray, clBlack);
+					   _getch();
+					   break;
+			}
+				//Атака
+			case 12:
+			{
+					   system("cls");
+					   submarine.target(&submarine);
+					   _getch();
+					   break;
 			}
 		}
 
