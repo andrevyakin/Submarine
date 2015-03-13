@@ -13,29 +13,18 @@ using namespace std;
 class Submarine
 {
 public:
-	Submarine();
-	~Submarine();
-	void torpedoes();
-	void fuel();
-	void GetNane();
-private:
+	Submarine(string name, int torpedoes, int fuel) : name(name), torpedoes(torpedoes), fuel(fuel) {};
+	Submarine(const Submarine & submarine){};
+	~Submarine(){};
+	
 	string name;
-	//	vector <int> torpedoes;
-	//	vector <int> fuel;
+	int torpedoes;
+	int fuel;
+
+	void forward(Submarine * submarine, bool dir);
+
 };
 
-class Torpedoes : public Submarine
-{};
-
-class Fuel : public Submarine
-{
-public:
-	void forward();
-};
-
-void Fuel::forward()
-{
-}
 
 //Консольные цвета
 enum
@@ -65,14 +54,34 @@ void SetConsoleCursorPosition(short x_position, short y_position)
 enum VKey
 {
 	UP = 72, LEFT = 75, RIGHT = 77, DOWN = 80,
-	ENTER = 13, ESC = 27, BackSpase = 8,
+	ENTER = 13, ESC = 27, BackSpase = 8, Spase = 32,
 	F1 = 59, F2 = 60, PageUp = 73, PageDown = 81
 };
 
+void Submarine::forward(Submarine * submarine, bool dir)
+{
+	int stop = 0, time = 0;
+	system("cls");
+	cout << "Время в пути" << endl;
+	cout << "Остаток горючего" << endl;
+	
+	while (stop != VKey::Spase)
+	{
+		SetConsoleCursorPosition(20, 0);
+		cout << ++time;
+		SetConsoleCursorPosition(20, 1);
+		dir ? submarine->fuel -= 10 : submarine->fuel -= 20;
+		cout << submarine->fuel;
+		Sleep(1000);
+		if (_kbhit())
+			stop = _getch();
+	}
+}
 
 void main()
 {
 	setlocale(LC_ALL, "Russian");
+	Submarine submarine ("Подводная лодка в степях Украины", 10, 1000);
 
 	//Вектор с элементами меню
 	vector<string> menu
@@ -93,7 +102,7 @@ void main()
 		"4. Esc - выход из программы."
 	};
 
-	int y, move; //Элемент меню и нажатая клавиша
+	int y, move; //y - Элемент меню и положение курсора, move - нажатая клавиша
 	do
 	{
 		//Вывод меню в консоль с установкой "зеленого курсора" на верхней строчке
@@ -142,7 +151,7 @@ void main()
 			case 1:
 			{
 					  system("cls");
-					  cout << "Подводная лодка \"В степях Украины\"." << endl;
+					  cout << submarine.name << endl;
 					  system("pause");
 					  break;
 			}
@@ -150,7 +159,7 @@ void main()
 			case 2:
 			{
 					  system("cls");
-					  cout << "Оборудована 10-ю торпедами." << endl;
+					  cout << "На борту " << submarine.torpedoes << " торпед." << endl;
 					  system("pause");
 					  break;
 			}
@@ -158,7 +167,7 @@ void main()
 			case 3:
 			{
 					  system("cls");
-					  cout << "Запас топлива 1000 литров." << endl;
+					  cout << "Запас топлива " << submarine.fuel << " литров." << endl;
 					  system("pause");
 					  break;
 			}
@@ -174,8 +183,23 @@ void main()
 			case 5:
 			{
 					  system("cls");
-					  cout << "Начинаем движенире вперед." << endl;
-					  //forward();
+					  cout << "В настоящее время топлива " << submarine.fuel << " литров" << endl;
+					  cout << "Расход топлива 10 литров в секунду" << endl;
+					  cout << "Дня начала движения нажмите любую клавиу" << endl;
+					  _getch();
+					  submarine.forward(&submarine, true);
+					  system("pause");
+					  break;
+			}
+				//Начать движение вперед
+			case 7:
+			{
+					  system("cls");
+					  cout << "В настоящее время топлива " << submarine.fuel << " литров" << endl;
+					  cout << "Расход топлива 20 литров в секунду" << endl;
+					  cout << "Дня начала движения нажмите любую клавиу" << endl;
+					  _getch();
+					  submarine.forward(&submarine, false);
 					  system("pause");
 					  break;
 			}
