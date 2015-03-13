@@ -1,12 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <list>
-#include <map>
-#include <iterator>
 #include <string>
 #include <conio.h>
 #include <Windows.h>
 #include <ctime>
+#include <iomanip>
 
 using namespace std;
 
@@ -22,6 +20,7 @@ public:
 	int fuel;
 
 	void forward(Submarine * submarine, bool dir);
+	void target(Submarine * submarine);
 
 };
 
@@ -83,6 +82,53 @@ void Submarine::forward(Submarine * submarine, bool dir)
 	}
 }
 
+void Submarine::target(Submarine * submarine)
+{
+	srand((unsigned)time(NULL));
+
+	//контейнер случайных целей
+	vector<int>target;
+	for (int i = 0; i < 15; i++)
+		target.insert(target.end(), rand() % 100);
+			
+	int x, move; //y - Положение курсора, move - нажатая клавиша
+	do
+	{
+		//Вывод целей в консоль с установкой "зеленого курсора" на первой
+		SetConsoleColorTextBackground(clGray, clBlack);
+		system("cls");
+		cout << "\t\tВыбирите случайную цель" << endl << endl;
+		SetConsoleCursorPosition(0, 3);
+		SetConsoleColorTextBackground(clWhite, clGreen);
+		cout << setw(4) << setfill (' ') << target[0];
+		SetConsoleColorTextBackground(clGray, clBlack);
+		for (int i = 1; i < 15; i++)
+			cout << setw(4) << setfill(' ') << target[i];
+
+		//Перемещение по целям стрелочками клавиатуры
+		x = move = 0;
+		while (move != VKey::ENTER && move != VKey::ESC)
+		{
+			move = _getch();
+			if (move == 0xe0)
+				move = _getch();
+
+			SetConsoleCursorPosition(x, 3);
+			SetConsoleColorTextBackground(clGray, clBlack);
+			cout << setw(4) << setfill(' ') << target[x / 4];
+
+			move == VKey::RIGHT && x < 56 ? x+=4 : x;
+			move == VKey::LEFT && x > 0 ? x-=4 : x;
+
+			SetConsoleCursorPosition(x, 3);
+			SetConsoleColorTextBackground(clWhite, clGreen);
+			cout << setw(4) << setfill(' ') << target[x / 4];
+			SetConsoleColorTextBackground(clGray, clBlack);
+		}
+	} while (move != VKey::ESC && x != 13);
+
+}
+
 void main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -131,7 +177,7 @@ void main()
 			SetConsoleColorTextBackground(clGray, clBlack);
 			cout << menu[y];
 
-			move == VKey::DOWN && y < menu.size() - 1 ? y++ : y;
+			move == VKey::DOWN && y < 13 ? y++ : y;
 			move == VKey::UP && y > 0 ? y-- : y;
 
 			SetConsoleCursorPosition(0, y);
@@ -232,6 +278,25 @@ void main()
 					  submarine.fuel = 1000;
 					  cout << "\nПодводная заправлена полностью (1000 л.)." << endl;
 					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
+					  break;
+			}
+				//Режим атаки
+			case 9:
+			{
+					  system("cls");
+					  copy(menu.begin(), menu.end(), ostream_iterator<string>(cout, "\n"));
+					  SetConsoleColorTextBackground(clWhite, clGreen);
+					  cout << "\nРежим атаки..." << endl;
+					  SetConsoleColorTextBackground(clGray, clBlack);
+					  _getch();
+					  break;
+			}
+				//Поиск цели
+			case 10:
+			{
+					   system("cls");
+					   submarine.target(&submarine);
 					  _getch();
 					  break;
 			}
